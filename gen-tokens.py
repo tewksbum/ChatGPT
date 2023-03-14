@@ -96,7 +96,8 @@ df['n_tokens'] = df.body.apply(lambda x: len(tokenizer.encode(x)))
 
 df['combined'] = df.title + "///" + df.body
 
-df.to_csv('processed/combined' + now.strftime("%m-%d-%Y %H:%M:%S") + '.csv')
+df.to_csv('processed/combined' + ";rows:" + str(len(df.index)) + ";time:" + now.strftime("%m-%d-%Y %H:%M:%S") + '.csv')
+df.to_csv('processed/combined.csv')
 
 shortened = []
 
@@ -118,6 +119,7 @@ for row in df.iterrows():
 df = pd.DataFrame(shortened, columns = ['combined'])
 df['n_tokens'] = df.combined.apply(lambda x: len(tokenizer.encode(x)))
 
-df.to_csv('processed/shortened' + now.strftime("%m-%d-%Y %H:%M:%S") + '.csv')
+df.to_csv('processed/shortened' + ";mtokens:" + str(max_tokens) + ";rows:" + str(len(df.index)) + ";time:" + now.strftime("%m-%d-%Y %H:%M:%S") + '.csv')
+df.to_csv('processed/short.csv')
 
 # df.head()

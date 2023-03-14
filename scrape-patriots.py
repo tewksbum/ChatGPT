@@ -139,9 +139,11 @@ def crawl(url):
                 if soup.find(class_="nfl-c-article__description"):
                     description = soup.find(class_="nfl-c-article__description").get_text()
                 if soup.find(class_="nfl-c-article__container"):
-                    body = soup.find(class_="nfl-c-article__container").get_text()
+                    for b in soup.find(class_="nfl-c-article__container"):
+                        body = body + b.get_text()
                 if soup.find(class_="nfl-c-body-part--text"):
-                    body = body + soup.find(class_="nfl-c-body-part--text").get_text()
+                    for b2 in soup.find(class_="nfl-c-body-part--text"):
+                        body = body + b2.get_text()
                 
             if re.search("/team/stats/", url):
                 title = "team stats"
