@@ -116,7 +116,11 @@ def crawl(url):
         print(url) # for debugging and to see the progress
 
         # Save text from the url to a <url>.txt file
-        with open('text/'+domain+'/'+url[8:].replace("/", "_") + ".txt", "w") as f:
+        s_url = url[8:]
+        if len(s_url) > 175:
+            s_url = s_url[:175] + '..'
+        fname = 'text/' + domain + '/' + s_url.replace("/", "_") + ".txt"
+        with open(fname, "w") as f:
 
             # Get the text from the URL using BeautifulSoup
             soup = BeautifulSoup(requests.get(url).text, "html.parser")

@@ -20,32 +20,36 @@ def list_files(startpath):
         for file in files:
             with open(os.path.join(root, file), "r", encoding="UTF-8") as f:
                 if not re.search("DS_", f.name):
-                    # print(os.path.join(root, file))
+                    print('***********************************************************')
+                    print('processing: ' + os.path.join(root, file))
                     content = remove_newlines(f.read())
                     # print(content)
                     
                     content_parts = content.split(';DESC')
-                    # print(content_parts[0])
-                    # print(content_parts[0].split(':')[1])
-                    title = content_parts[0].split(':')[1]
-    
-                    # print(content_parts[1])
-                    content = content_parts[1]
-                    content_parts = content.split(';BODY')
-                    # print(content_parts[0])
-                    # print(content_parts[0].split('=')[1])
-                    desc = content_parts[0].split('=')[1]
-                    
-                    content = content_parts[1]
-                    # print(content)
-                    body = content[1:]
-                    # print(body)
-                    
-                    if len(body) > 100:
-                        body = body[:-4] # remove " END" from end of body
-                        # print(body)
-                        lf_contents.append((root[7:], title, desc, body))
-                        print("Added: " + root[7:] + " > " + title + " > " + os.path.join(root, file))
+                    if len(content_parts) > 1:
+                        print('title: ' + (content_parts[0]))
+                        title = (content_parts[0].split(':')[1])
+                        if len(title) > 1:
+                            title = title.strip()
+        
+                        # print(content_parts[1])
+                        content = content_parts[1]
+                        if len(content_parts) > 1:
+                            content_parts = content.split(';BODY')
+                            # print(content_parts[0])
+                            # print(content_parts[0].split('=')[1])
+                            desc = (content_parts[0].split('=')[1])
+                            
+                            content = content_parts[1]
+                            # print(content)
+                            body = (content[1:]).strip()
+                            # print(body)
+                            
+                            if len(body) > 100:
+                                body = body[:-4] # remove " END" from end of body
+                                # print(body)
+                                lf_contents.append((root[7:], title, desc, body))
+                                print("Added: " + root[7:] + " > " + title + " > " + os.path.join(root, file))
     return lf_contents
 
 # Function to split the text into chunks of a maximum number of tokens
