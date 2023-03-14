@@ -11,8 +11,9 @@ import os
 HTTP_URL_PATTERN = r'^http[s]*://.+'
 
 # Define root domain to crawl
+file_path = "heavy"
 domain = "heavy.com"
-full_url = "https://www.heavy.com/sports/new-england-patriots/"
+full_url = "https://www.heavy.com/sports/new-england-patriots"
 
 # Create a class to parse the HTML and get the hyperlinks
 class HyperlinkParser(HTMLParser):
@@ -64,16 +65,16 @@ def get_domain_hyperlinks(local_domain, url):
         if re.search(HTTP_URL_PATTERN, link):
             # Parse the URL and check if the domain is the same
             url_obj = urlparse(link)
-            if url_obj.netloc == local_domain:
+            if url_obj.netloc == domain:
                 clean_link = link
         
         # If the link is not a URL, check if it is a relative link
-        else:
-            if link.startswith("/"):
-                link = link[1:]
-            elif link.startswith("#") or link.startswith("mailto:"):
-                continue
-            clean_link = "https://" + local_domain + "/" + link
+        #else:
+        #    if link.startswith("/"):
+        #        link = link[1:]
+        #    elif link.startswith("#") or link.startswith("mailto:"):
+        #        continue
+        #    clean_link = "https://" + local_domain + "/" + link
         
         if clean_link is not None:
             if clean_link.endswith("/"):
@@ -88,6 +89,7 @@ def get_domain_hyperlinks(local_domain, url):
 def crawl(url):
     # Parse the URL and get the domain
     local_domain = urlparse(url).netloc
+    local_domain = "heavy.com/sports/new-england-patriots/"
 
     # Create a queue to store the URLs to crawl
     queue = deque([url])
@@ -99,8 +101,8 @@ def crawl(url):
     if not os.path.exists("text/"):
             os.mkdir("text/")
 
-    if not os.path.exists("text/"+local_domain+"/"):
-            os.mkdir("text/" + local_domain + "/")
+    if not os.path.exists("text/"+domain+"/"):
+            os.mkdir("text/" + domain + "/")
 
     # Create a directory to store the csv files
     if not os.path.exists("processed"):
@@ -114,7 +116,7 @@ def crawl(url):
         print(url) # for debugging and to see the progress
 
         # Save text from the url to a <url>.txt file
-        with open('text/'+local_domain+'/'+url[8:].replace("/", "_") + ".txt", "w") as f:
+        with open('text/'+domain+'/'+url[8:].replace("/", "_") + ".txt", "w") as f:
 
             # Get the text from the URL using BeautifulSoup
             soup = BeautifulSoup(requests.get(url).text, "html.parser")
