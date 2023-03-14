@@ -13,16 +13,12 @@ from openai.embeddings_utils import distances_from_embeddings
 import numpy as np
 from openai.embeddings_utils import distances_from_embeddings, cosine_similarity
 
-# Define root domain to crawl
-domain = "patriots.com"
-full_url = "https://patriots.com/"
-
-# def remove_newlines(serie):
-#     serie['colname'] = serie['colname'].str.replace('\n', ' ')
-#     serie['colname'] = serie['colname'].str.replace('\\n', ' ')
-#     serie['colname'] = serie['colname'].str.replace('  ', ' ')
-#     serie['colname'] = serie['colname'].str.replace('  ', ' ')
-#     return serie
+def remove_newlines(serie):
+    serie['colname'] = serie['colname'].str.replace('\n', ' ')
+    serie['colname'] = serie['colname'].str.replace('\\n', ' ')
+    serie['colname'] = serie['colname'].str.replace('  ', ' ')
+    serie['colname'] = serie['colname'].str.replace('  ', ' ')
+    return serie
 
 # Create a list to store the text files
 texts=[]

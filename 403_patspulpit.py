@@ -7,6 +7,57 @@ from html.parser import HTMLParser
 from urllib.parse import urlparse
 import os
 
+##################################################
+##################################################
+##################################################
+##################################################
+
+ import requests
+from bs4 import BeautifulSoup
+
+def get_links(url):
+    # Make a request to the landing page
+    response = requests.get(url)
+
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.content, "html.parser")
+
+    # Find all the hyperlinks in the landing page
+    links = soup.find_all("a")
+
+    # Extract the href attribute of each hyperlink
+    urls = [link.get("href") for link in links]
+
+    # Filter out None and empty strings
+    urls = list(filter(None, urls))
+
+    # Make the hyperlinks absolute URLs
+    urls = [requests.compat.urljoin(url, u) for u in urls]
+
+    return urls
+
+def get_all_links(url):
+    # Get the links from the landing page
+    links = get_links(url)
+
+    # Recursively get the links from all the pages linked to from the landing page
+    for link in links:
+        try:
+            # Get the links from the linked page
+            linked_links = get_all_links(link)
+
+            # Add the linked links to the list of links
+            links.extend(linked_links)
+        except:
+            pass
+
+    return links
+
+##################################################
+##################################################
+##################################################
+##################################################
+
 # Regex pattern to match a URL
 HTTP_URL_PATTERN = r'^http[s]*://.+'
 
