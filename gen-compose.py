@@ -40,19 +40,18 @@ def create_context(
             break
         
         # Else add it to the text that is being returned
-        returns.append(row["text"])
+        returns.append("Example " + str(i) + ":\n" + row["text"])
 
     # Return the context
-    return "\n\n###\n\n".join(returns)
+    return "\n\n".join(returns)
 
 def answer_question(
     df,
     question,
     model="text-davinci-003",
-    max_len=5000,
     size="ada",
     debug=str(config('BOOL_DEBUG')),
-    max_tokens=750,
+    max_tokens=1000,
     stop_sequence=None
 ):
     """
@@ -61,19 +60,22 @@ def answer_question(
     context = create_context(
         question,
         df,
-        max_len=3000,
+        max_len=2750,
         size=size,
     )
+    
+    author = str(config('AUTHOR'))
+    
     # If debug, print the raw model response
-    if debug:
-        print(f'“””\nYou are a funny sports journalist writing an article based on a prompt.  Use the following format, replacing text in brackets with the result.  Write in the style of Jerry Seinfeld and answer the question based upon the context below.  If the question cant be answered based on the context, say \”I dont know \”\n\nContext: {context}\nQuestion: {question}\nAnswer: [[introductory paragraph]]\n## [name of topic 1] [[paragraph about topic 1]]\n## [name of topic 2] [[paragraph about topic 2]]\n## [name of topic 3] [[paragraph about topic 3]]\n[[concluding paragraph]]“””')
+    #if debug:
+        #print(f'% System\n\nYou are a funny sports journalist.  You write humerous articles about trending football news.  You write in the style of {author}, use foul language, and close all of your articles with a witty tagline.  All of your articles have 4 paragraphs as follows:\n\n1. Introduction\n2. Supporting point 1\n3. Supporting point 2\n4. Conclusion\n\nRead and apply the following examples when responding to questions.\n\n% Context\n\n{context}\n\n----\n\n% Question\n%{question}\n\n% Answer\n%')
         # print("Context:\n" + context)
-        print("\n\n************************************************************************\n\n")
+    #    print("\n\n************************************************************************\n\n")
 
     try:
         # Create a completions using the question and context
         response = openai.Completion.create(
-            prompt=f'“””\nYou are a funny sports journalist writing an article based on a prompt.  Use the following format, replacing text in brackets with the result.  Write in the style of Jerry Seinfeld and answer the question based upon the context below.  If the question cant be answered based on the context, say \”I dont know \”\n\nContext: {context}\nQuestion: {question}\nAnswer: [[introductory paragraph]]\n## [name of topic 1] [[paragraph about topic 1]]\n## [name of topic 2] [[paragraph about topic 2]]\n## [name of topic 3] [[paragraph about topic 3]]\n[[concluding paragraph]]“””',
+            prompt=f'"""\nYou are a funny sports journalist writing an article based on a prompt.  Write in the style of Bill Burr and use two curse words.  Use the context below to answer the question.  Use this format, replacing text in brackets with the result.  Do not inclued the brackets in the output:\n\nArtilce:\n[Introductory paragraph]\n\n# [Name of Topic 1]\n[Paragraph about topic 1]\n\n[Concluding paragraph]\n\nContext:\n\n{context}"""\n\nQuestion: {question}?\n',
             temperature=1,
             max_tokens=max_tokens,
             top_p=1,
@@ -82,7 +84,13 @@ def answer_question(
             stop=stop_sequence,
             model=model,
         )
+        
+        print("\n\n************************************************************************\n\n")
+        print(f'"""\nYou are a funny sports journalist writing an article based on a prompt.  Write in the style of Bill Burr and use two curse words.  Use the context below to answer the question.  Use this format, replacing text in brackets with the result.  Do not inclued the brackets in the output:\n\nArtilce:\n[Introductory paragraph]\n\n# [Name of Topic 1]\n[Paragraph about topic 1]\n\n[Concluding paragraph]\n\nContext:\n\n{context}"""\n\nQuestion: {question}?\n')
+        print("\n-------------------------------------------\n")
         print(response["choices"][0]["text"].strip())
+        print("\n\n************************************************************************\n\n")
+        
         return response["choices"][0]["text"].strip()
     except Exception as e:
         print(e)

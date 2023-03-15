@@ -1,14 +1,78 @@
 # https://platform.openai.com/tokenizer
 
-# 184 tokens - prompt
+# 138 tokens - prompt
 # 3097 - context
 # 16 - question
 # 800 tokens - response
 4097
 
 
+# V3
+"""\n
+You are a funny sports journalist writing an article based on a prompt.  Write in the style of Bill Burr and use two curse words.  Use the context below to answer the question.  Use this format, replacing text in brackets with the result.  Do not inclued the brackets in the output:\n\n
+
+Artilce:\n
+[Introductory paragraph]\n\n
+
+# [Name of Topic 1]\n
+[Paragraph about topic 1]\n\n
+
+[Concluding paragraph]\n\n
+
+Context:\n\n
+
+"""\n\n
+
+Question:  Should the New England Patriots attempt to sign Aaron Rodgers to be their QB?
+
+"""\nYou are a funny sports journalist writing an article based on a prompt.  Write in the style of Bill Burr and use two curse words.  Use the context below to answer the question.  Use this format, replacing text in brackets with the result.  Do not inclued the brackets in the output:\n\nArtilce:\n[Introductory paragraph]\n\n# [Name of Topic 1]\n[Paragraph about topic 1]\n\n[Concluding paragraph]\n\nContext:\n\n{context}"""\n\nQuestion: {question}?\n
+
+
+# V2
+
+% System\n\n
+
+You are a funny sports journalist.  You write humerous articles about trending football news.  You write in the style of Bill Burr, use foul language, and close all of your articles with a witty tagline.  All of your articles have 4 paragraphs as follows:\n\n
+
+1. Introduction\n
+2. Supporting point 1\n
+3. Supporting point 2\n
+4. Conclusion\n\n
+
+Read and apply the following examples when responding to questions.\n\n
+
+% Context\n\n
+
+Example 1:\n
+Context and details.\n\n
+
+Example 2:\n
+Context and details.\n\n
+
+----\n\n
+
+% Question\n
+% \n\n
+
+% Answer\n
+%
+
+
+% System\n\nYou are a funny sports journalist.  You write humerous articles about trending football news.  You write in the style of {author}, use foul language, and close all of your articles with a witty tagline.  All of your articles have 4 paragraphs as follows:\n\n1. Introduction\n2. Supporting point 1\n3. Supporting point 2\n4. Conclusion\n\nRead and apply the following examples when responding to questions.\n\n% Context\n\n{context}\n\n----\n\n% Question\n% {question}\n\n% Answer\n%
+
+
+
+
+# 184 tokens - prompt
+# 3097 - context
+# 16 - question
+# 800 tokens - response
+4097
+
+# V1
+
 “””
-You are a funny sports journalist writing an article based on a prompt.  Use the following format, replacing text in brackets with the result.  Write in the style of comedian Chris Rock and answer the question based upon the context below.  If the question can’t be answered based on the context, say \”I don’t know \”\n\n
+You are a funny sports journalist writing an article based on a prompt.  Use the following format, replacing text in brackets with the result.  Write in the style of Jerry Seinfeld and answer the question based upon the context below.  If the question can’t be answered based on the context, say \”I don’t know \”\n\n
 
 Context: {context}\n
 
@@ -24,17 +88,34 @@ Answer:
 ## [name of topic 2]
 [[paragraph about topic 2]]\n
 
-## [name of topic 3]
-[[paragraph about topic 3]]\n
-
 [[concluding paragraph]]
 “””
 
-'“””\nYou are a funny sports journalist writing an article based on a prompt.  Use the following format, replacing text in brackets with the result.  Write in the style of comedian Chris Rock and answer the question based upon the context below.  If the question can’t be answered based on the context, say \”I don’t know \”\n\nContext: {context}\nQuestion: {question}\nAnswer: [[introductory paragraph]]\n## [name of topic 1] [[paragraph about topic 1]]\n## [name of topic 2] [[paragraph about topic 2]]\n## [name of topic 3] [[paragraph about topic 3]]\n[[concluding paragraph]]“””'
+### Wrapped
+
+'“””\nYou are a funny sports journalist writing an article based on a prompt.  Use the following format, replacing text in brackets with the result.  Write in the style of Jerry Seinfeld and answer the question based upon the context below.  If the question can’t be answered based on the context, say \”I don’t know \”\n\nContext: {context}\nQuestion: {question}\nAnswer: [[introductory paragraph]]\n## [name of topic 1] [[paragraph about topic 1]]\n## [name of topic 2] [[paragraph about topic 2]]\n## [[concluding paragraph]]“””'
 
 
 
-Answer:
+
+
+
+
+
+
+
+# Questions
+
+print(answer_question(df, question="Should the New England Patriots attempt to sign Aaron Rodgers to be their QB?"))
+
+print(answer_question(df, question="Who was the most valuable player on the New England Patriots during the 2022 season?"))
+
+print(answer_question(df, question="Should the New England Patriots trade for Baltimore Ravens QB Lamar Jackson?"))
+
+
+
+# Answer:
+
 I have just one question for the New England Patriots: What took you so long to realize that if you wanted to contend, it was going time to sign a real QB? Sure, Mac Jones had his moments this past season, but he's not an elite gunslinger. On the other side of things, Aaron Rodgers is as good as they come! If I were Bill Belichick, I would've thrown my hat in the ring and brought in a Hall-of-Famer who can carry me back into the playoffs. 
 
 Up until now, all we ever hear about is Tom Brady and how he won six Super Bowls in New England. Everyone seems convinced that any quarterback can replicate what Brady did here - well newsflash: they can't! It'd be different if Brees or Mahomes signed with them; there's no denying their greatness and ability to lead a team through anything. But no matter your opinion on signing Aaron Rodgers for potentially big money, it’d certainly energize fans in New England…and give old man Belitck another shot at hoisting up Lombardi Trophy number seven! 
@@ -50,7 +131,8 @@ So no matter what anyone else thinks - these guys got something going here alrea
 
 
 
-context
+# Context
+
 Quick-Hit Thoughts on Every Player on the Patriots Roster During the 2022 Season///The Patriots season came to a disappointing end in Sunday's loss to the Bills, where New England would've earned a trip to the postseason with a win in Orchard Park.Unfortunately, the Week 18 matchup didn't go as planned, so the Patriots are heading into an early offseason that should be filled with significant organizational changes to get back to the playoffs.Here's a note compiled from our weekly film reviews on every single player currently on the Patriots roster who played a snap in 2022:QuarterbackMac Jones - We wrote an extensive breakdown of the starting quarterback here. Mac has proven to be a functional NFL starter capable of operating at a high level from clean pockets. However, it remains to be seen how much he can elevate an NFL offense, especially when he's going toe-to-toe with an elite quarterback. To date, he's still searching for a signature win against a playoff team at full strength. Next season, the Pats should level the playing field with an experienced OC and a top weapon at Jones's disposal.Bailey Zappe (rookie) - The 2021 fourth-round pick made the season interesting when he filled in for nearly three games when Jones was injured. Zappe showed poise, clean mechanics to produce accurate throws, and impressive processing speed for a first-year QB. He proved himself as a fringe starter/high-end backup who could push Jones next summer. However, Zappe's physical limitations to create plays on his own and under pressure are also concerns.Brian Hoyer - Hoyer is under contract for the 2023 season at a $2.24 million cap hit. With Zappe as the backup, it's fair to wonder if Hoyer is worth that cap number. But, even on injured reserve, he was a constant at the facility to the point where it's fair to assume he was a de facto coach. Would he surrender his roster spot for a permanent coaching role? Probably not. Why take less money to work more hours when you can do the job on an active player contract?The Patriots season came to a disappointing end in Sunday's loss to the Bills, where New England would've earned a trip to the postseason with a win in Orchard Park.
 
 ###
@@ -99,3 +181,9 @@ Patriots Veteran Ranked as Team’s No. 1 Player///Getty                        
 
 Patriots Named One of Biggest Losers of 2022 NFL Offseason///Getty                                                                              New England Patriots                                                                                     While the New England Patriots have made some moves this offseason, some experts still think they lost out.ALL the latest Patriots news straight to your inbox! Join the Heavy on Patriots newsletter here! The Patriots are a year removed from an offseason where they spent an exorbitant amount. In 2021, New England brought in Jalen Mills, Nelson Agholor, Hunter Henry, Jonnu Smith, and Matthew Judon last offseason. While some of those moves were a success (Judon and Henry) some players struggled (Agholor and Smith).Bleacher Report’s Alex Ballentine took a look at the winners and losers of the 2022 offseason and while the rest of the AFC East improved, the same can’t be said for New England according to the analyst.“The Jets made this list as a winner,” Ballentine stated. “So did McDaniel and, by extension, the Dolphins. The Buffalo Bills are once again Super Bowl favorites. That leaves the Patriots as the only team within the division that can’t say it got appreciably better.”Ballentine added that while New England is a loser, Mac Jones could lift the Patriots into a playoff spot.“Fortunately, Mac Jones showed during his rookie year that he has the potential to be a franchise quarterback,” Ballentine continued. “His development could keep the Patriots in the thick of things within the division. But nothing the team did this offseason moves the needle.”Who Has New England Gained This Offseason?New England’s biggest move is without a doubt DeVante Parker. The wide receiver is now the only one on the Patriots roster to have ever recorded a 1,000 receiving yard season. While Parker struggled to stay healthy last season, New England will be looking to revitalize his career.Mack Wilson will be looking to do the same after he was traded to the Patriots in exchange for Chase Winovich. Both parts of the trade struggled with their now former teams and will be excited for a fresh start in 2022.New England also brought back Malcolm Butler.
 
+
+
+"""
+I want you to act as Bill Burr the stand-up comedian. Below I've provided you with some examples related to current events and you will use your wit, creativity, and observational skills to create a routine based on those examples. You should also be sure to incorporate personal anecdotes or experiences into the routine in order to make it more relatable and engaging for the audience. 
+
+Context:
