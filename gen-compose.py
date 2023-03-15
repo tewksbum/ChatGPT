@@ -7,10 +7,11 @@ from openai.embeddings_utils import distances_from_embeddings, cosine_similarity
 
 openai.api_key = str(config('API_OPENAI'))
 
-df=pd.read_csv('processed/embeddings.csv', index_col=0)
-df.columns = ['text', 'tokens', 'embeddings']
-df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
+df=pd.read_csv('processed/embed/embed-comb.csv', index_col=0)
+df.columns = ['batchid', 'text', 'tokens', 'embeddings']
 df.head()
+print(df.head())
+df['embeddings'] = df['embeddings'].apply(eval).apply(np.array)
 
 def create_context(
     question, df, max_len, size="ada"
@@ -51,7 +52,7 @@ def answer_question(
     max_len=5000,
     size="ada",
     debug=str(config('BOOL_DEBUG')),
-    max_tokens=1000,
+    max_tokens=750,
     stop_sequence=None
 ):
     """
@@ -60,19 +61,20 @@ def answer_question(
     context = create_context(
         question,
         df,
-        max_len=max_len,
+        max_len=3000,
         size=size,
     )
     # If debug, print the raw model response
     if debug:
-        print("Context:\n" + context)
-        print("\n\n")
+        print(f'“””\nYou are a funny sports journalist writing an article based on a prompt.  Use the following format, replacing text in brackets with the result.  Write in the style of Jerry Seinfeld and answer the question based upon the context below.  If the question cant be answered based on the context, say \”I dont know \”\n\nContext: {context}\nQuestion: {question}\nAnswer: [[introductory paragraph]]\n## [name of topic 1] [[paragraph about topic 1]]\n## [name of topic 2] [[paragraph about topic 2]]\n## [name of topic 3] [[paragraph about topic 3]]\n[[concluding paragraph]]“””')
+        # print("Context:\n" + context)
+        print("\n\n************************************************************************\n\n")
 
     try:
         # Create a completions using the question and context
         response = openai.Completion.create(
-            prompt=f"Answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know\"\n\nContext: {context}\n\n---\n\nQuestion: {question}\nAnswer:",
-            temperature=0,
+            prompt=f'“””\nYou are a funny sports journalist writing an article based on a prompt.  Use the following format, replacing text in brackets with the result.  Write in the style of Jerry Seinfeld and answer the question based upon the context below.  If the question cant be answered based on the context, say \”I dont know \”\n\nContext: {context}\nQuestion: {question}\nAnswer: [[introductory paragraph]]\n## [name of topic 1] [[paragraph about topic 1]]\n## [name of topic 2] [[paragraph about topic 2]]\n## [name of topic 3] [[paragraph about topic 3]]\n[[concluding paragraph]]“””',
+            temperature=1,
             max_tokens=max_tokens,
             top_p=1,
             frequency_penalty=0,
@@ -80,13 +82,14 @@ def answer_question(
             stop=stop_sequence,
             model=model,
         )
+        print(response["choices"][0]["text"].strip())
         return response["choices"][0]["text"].strip()
     except Exception as e:
         print(e)
         return ""
     
-answer_question(df, question="Should the New England Patriots attempt to sign Aaron Rodgers to be their QB?")
+print(answer_question(df, question="Should the New England Patriots attempt to sign Aaron Rodgers to be their QB?"))
 
-answer_question(df, question="Who was the most valuable player on the New England Patriots during the 2022 season?")
+print(answer_question(df, question="Who was the most valuable player on the New England Patriots during the 2022 season?"))
 
-answer_question(df, question="Should the New England Patriots trade for Baltimore Ravens QB Lamar Jackson?")
+print(answer_question(df, question="Should the New England Patriots trade for Baltimore Ravens QB Lamar Jackson?"))
