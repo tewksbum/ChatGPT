@@ -1,9 +1,8 @@
-import pinecone # for vector database
 from decouple import config
 import pandas as pd
 import numpy as np
+import pinecone # for vector database
 import openai
-import random
 from openai.embeddings_utils import distances_from_embeddings, cosine_similarity
 
 openai.api_key = str(config('API_OPENAI'))
