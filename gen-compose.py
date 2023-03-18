@@ -98,7 +98,8 @@ def answer_question(
     
 @app.post("/compose/", response_model=QA)
 async def compose(qa: QA):
-    response = answer_question(question=qa.question)
+    answer = answer_question(question=qa.question)
+    response = QA(question=qa.question, answer=answer)
     print(response)
     return response
     
