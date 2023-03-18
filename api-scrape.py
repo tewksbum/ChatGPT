@@ -9,8 +9,8 @@ class Domain(BaseModel):
     id: int
     domain: str
     full_url: Optional[str] = None
-    createdat: datetime.date
-    updatedat: datetime.date
+    createdat: Optional[datetime.date]
+    updatedat: Optional[datetime.date]
 
 # In-memory data store
 domains = {}
@@ -45,3 +45,6 @@ async def read_items():
 #         raise HTTPException(status_code=404, detail="Item not found")
 #     del items[item_id]
 #     return {"detail": "Item deleted"}
+
+# uvicorn main:app --reload
+# uvicorn api-scrape:app --reload
