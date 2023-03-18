@@ -5,7 +5,15 @@ import numpy as np
 import tiktoken
 import pinecone # for vector database
 import openai
+from pydantic import BaseModel
 from openai.embeddings_utils import distances_from_embeddings, cosine_similarity
+from fastapi import FastAPI, HTTPException
+
+class QA(BaseModel):
+    question: str
+    answer: str
+
+app = FastAPI()
 
 tokenizer = tiktoken.get_encoding("cl100k_base")
 
@@ -77,19 +85,23 @@ def answer_question(
             model=model,
         )
         
-        print("\n\n************************************************************************\n\n")
-        print(f'"""\nYou are a funny sports journalist writing an article based on a prompt.  Write in the style of {author} and use two curse words.  Use the context below to answer the question.  Use this format, replacing text in brackets with the result.  Do not inclued the brackets in the output:\n\nArtilce:\n[Introductory paragraph]\n\n# [Name of Topic 1]\n[Paragraph about topic 1]\n\n[Concluding paragraph]\n\nContext:\n\n{context}"""\n\nQuestion: {question}?\n')
-        print("\n-------------------------------------------\n")
-        print(response["choices"][0]["text"].strip())
-        print("\n\n************************************************************************\n\n")
+        # print("\n\n************************************************************************\n\n")
+        # print(f'"""\nYou are a funny sports journalist writing an article based on a prompt.  Write in the style of {author} and use two curse words.  Use the context below to answer the question.  Use this format, replacing text in brackets with the result.  Do not inclued the brackets in the output:\n\nArtilce:\n[Introductory paragraph]\n\n# [Name of Topic 1]\n[Paragraph about topic 1]\n\n[Concluding paragraph]\n\nContext:\n\n{context}"""\n\nQuestion: {question}?\n')
+        # print("\n-------------------------------------------\n")
+        # print(response["choices"][0]["text"].strip())
+        # print("\n\n************************************************************************\n\n")
         
         return response["choices"][0]["text"].strip()
     except Exception as e:
         print(e)
-        return ""
+        return e
     
-print(answer_question(question="Should the New England Patriots attempt to sign Aaron Rodgers to be their QB?"))
-
-print(answer_question(question="Who was the most valuable player on the New England Patriots during the 2022 season?"))
-
-print(answer_question(question="Should the New England Patriots trade for Baltimore Ravens QB Lamar Jackson?"))
+@app.post("/compose/", response_model=QA)
+async def compose(qa: QA):
+    response = answer_question(question=qa.question)
+    print(response)
+    return response
+    
+# print(answer_question(question="Should the New England Patriots attempt to sign Aaron Rodgers to be their QB?"))
+# print(answer_question(question="Who was the most valuable player on the New England Patriots during the 2022 season?"))
+# print(answer_question(question="Should the New England Patriots trade for Baltimore Ravens QB Lamar Jackson?"))
