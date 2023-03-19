@@ -26,7 +26,10 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-      
+                    
+      - name: Install setuptools
+        run: pip install setuptools
+
       - name: Install dependencies
         run: pip install -r requirements.txt
         
