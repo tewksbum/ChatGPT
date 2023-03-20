@@ -51,6 +51,9 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - name: Set up Azure CLI
+        uses: azure/setup-azurecli@v2
+        
       - name: Azure Login
         uses: Azure/login@v1
         with:
