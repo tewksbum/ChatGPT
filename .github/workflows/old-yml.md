@@ -10,6 +10,10 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  AZURE_WEBAPP_NAME: mrt-test-api # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,7 +30,10 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-      
+                    
+      - name: Install setuptools
+        run: pip install setuptools
+
       - name: Install dependencies
         run: pip install -r requirements.txt
         
@@ -48,16 +55,35 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - name: Set up Azure CLI
+        uses: azure/setup-azurecli@v2
+        
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+          enable-AzPSSession: true 
+        
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
           name: python-app
           path: .
-          
-      - name: 'Deploy to Azure Web App'
+
+      - name: Building web app
+        uses: azure/appservice-build@v2
+
+      - name: Deploy web App using GH Action azure/webapps-deploy
         uses: azure/webapps-deploy@v2
-        id: deploy-to-webapp
         with:
-          app-name: 'mrt-test-api'
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_2dac2901854d483bac8aa747fc96af5d }}
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          # publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          
+      # - name: 'Deploy to Azure Web App'
+      #   uses: azure/webapps-deploy@v2
+      #   id: deploy-to-webapp
+      #   with:
+      #     app-name: 'mrt-test-api'
+      #     slot-name: 'production'
+      #     publish-profile: ${{ secrets.AzureAppService_PublishProfile_5e836ea9df844f318f14a2a6fee265b0 }}
