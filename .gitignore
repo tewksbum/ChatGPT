@@ -1,6 +1,7 @@
 #scraping stuff
 text/
 processed/
+chatgpt/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
